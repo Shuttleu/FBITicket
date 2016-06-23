@@ -1,5 +1,5 @@
 <?php
-function remove_accents($string) { //Borrowed from WordPress
+function remove_accents($string) { //Borrowed from WordPress to allow non diacritic searching
     if ( !preg_match('/[\x80-\xff]/', $string) )
         return $string;
 
@@ -114,14 +114,14 @@ function remove_accents($string) { //Borrowed from WordPress
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
 		<script type="text/javascript">
-			$(document).ready(function() {
+			$(document).ready(function() { //Set default QR Code and search boxes
 				$('#qrcode').qrcode('Made By Shuttleu!');
 				$("#type").val('<?php echo $_GET['type']; ?>');
 				$("#region").val('<?php echo $_GET['region']; ?>');
 			});
 			function loadcode(titleid, name, region, serial, size){
 				$.ajax({
-					url: 'http://fbiticket.uk/api/?url=https://3ds.titlekeys.com/ticket/'+titleid
+					url: 'http://fbiticket.uk/api/?url=https://3ds.titlekeys.com/ticket/'+titleid //Running a reverse proxy to allow cross-domain AJAX
 				}).done(function(data) {
 					sizeunit = "B";
 					if (size > 1024){
@@ -136,7 +136,7 @@ function remove_accents($string) { //Borrowed from WordPress
 							}
 						}
 					}
-					name = name.replace(/\+/g, ' ');
+					name = name.replace(/\+/g, ' '); //Replace perticular characters that dont get converted correctly
 					name = name.replace(/\%3A/g, ':');
 					name = name.replace(/\%26/g, '&');
 					name = name.replace(/\%2B/g, '+');
@@ -214,13 +214,14 @@ function remove_accents($string) { //Borrowed from WordPress
 							<th><a href="?sort=name<?php if (!empty($_GET['filter'])) echo "&filter=".$_GET['filter']; if (!empty($_GET['region'])) echo "&region=".$_GET['region']; if (!empty($_GET['type'])) echo "&type=".$_GET['type']; ?>">Name</a></th>
 						</tr>
 						<?php
-							$titlelist = json_decode(file_get_contents('https://3ds.titlekeys.com/json_enc'), true);
-							if (!empty($_GET['sort']))
+							$titlelist = json_decode(file_get_contents('https://3ds.titlekeys.com/json_enc'), true); //Grab JSON
+							
+							if (!empty($_GET['sort'])) //Sort by TitleID, Region or Name
 								usort($titlelist, function($a, $b) {
 			    						return $a[$_GET['sort']] <=> $b[$_GET['sort']];
 								});
 							
-							if (!empty($_GET['type']) && !($_GET['type']=='all'))
+							if (!empty($_GET['type']) && !($_GET['type']=='all')) //Filter by title type
 								$titlelist = array_filter($titlelist, function($v) {
 									$types = ['eshop', 'sapp', 'sda', 'sapplet', 'smod', 'sfirm', 'down', 'dsisa', 'dsisda', 'dsiw', 'update', 'demo', 'dlc'];
 									$typeslower = [['00040000'], ['00040010'], ['0004001B', '000400DB', '0004009B'], ['00040030'], ['00040130'], ['00040138'], ['00040001'], ['00048005'], ['0004800F'], ['00048000', '00048004'], ['0004000E'], ['00040002'], ['0004008C']];
@@ -233,14 +234,14 @@ function remove_accents($string) { //Borrowed from WordPress
 									return $lowergood;
 								});
 
-							if (!empty($_GET['filter']))
+							if (!empty($_GET['filter'])) //Filter by search
 								$titlelist = array_filter($titlelist, function($v) { return fnmatch('*'.strtolower($_GET['filter']).'*', strtolower(remove_accents($v['name'])));});
 
-							if (!empty($_GET['region']))
+							if (!empty($_GET['region'])) //Filter by region
 								if (!($_GET['region'] == 'ALL'))
 									$titlelist = array_filter($titlelist, function($v) { return $_GET['region'] == $v['region'];});
 
-							foreach($titlelist as $key => $row){
+							foreach($titlelist as $key => $row){ // Print out all titles that have not been removed by the filtering
 							?>
 							<tr onclick="loadcode('<?php echo strtolower($row['titleID']); ?>', '<?php echo urlencode($row['name']); ?>', '<?php echo $row['region']; ?>', '<?php echo $row['serial']; ?>', '<?php echo $row['size']; ?>')">
 								<td><?php echo strtoupper($row['titleID']);?></td>
