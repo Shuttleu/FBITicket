@@ -17,6 +17,7 @@ So I made this webpage to do the same job. As a bonus, it is a web page, so it w
 * Title filtering (allows you to filter between eShop, DLC, Updates, etc.)
 * Generating QR code for installation with FBI
 * Automatically uses the lastest database (no need to download the database or update it)
+* Multiple-select (generate a QR code with multiple tickets so you can batch install)
 
 # How to use:
 * Search for the title you want at the top, there are various filters including region and type of title.
