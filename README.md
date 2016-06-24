@@ -1,11 +1,13 @@
 # FBI Ticket
 
 **What does this do?**
+
 Since FBI 2.3 was released, there is an option to install eShop tickets using nothing but a QR code.
 From here you can install the titles directly from Nintendos CDN.
 This website will let you choose a title and generate a QR code for you to scan in FBI.
 
 **Why I made this?**
+
 @Housey created a program to generate these QR codes, however, this program only works on Windows Vista or higher.
 Since I use macOS, this was rather limiting to me as I would have to boot windows just to scan a QR code.
 
