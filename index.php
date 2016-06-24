@@ -240,7 +240,7 @@
 						</div>
 						<div class="col-sm-3">
 							<select id="region" class="form-control" name="region">
-								<option selected="selected">ALL</option>
+								<option>ALL</option>
 								<option>EUR</option>
 								<option>USA</option>
 								<option>JPN</option>
