@@ -105,7 +105,7 @@
 	    return $string;
 	}
 
-	$titlelist = json_decode(file_get_contents('https://3ds.titlekeys.com/json_enc'), true); //Grab JSON
+	$titlelist = json_decode(file_get_contents('http://3ds.titlekeys.gq/json_enc'), true); //Grab JSON
 							
 	if (!empty($_GET['sort'])) //Sort by TitleID, Region or Name
 		usort($titlelist, function($a, $b) {
@@ -162,12 +162,17 @@
 				items[id] = !items[id];
 				if (!(id in itemurl)){
 					$.ajax({
-						url: 'ajax.php?ticket='+$('#title-'+id).data('titleid'),
-						async: false
-					}).done(function(data) {
-						var jsonobj = JSON.parse(data);
-						itemurl[id] = jsonobj.short;
-					});
+				        url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyBUTSrhMFFRCokZBaHMcE1bG-o1LUC_wEE',
+				        type: 'POST',
+				        contentType: 'application/json; charset=utf-8',
+				        data: '{ longUrl: "http://3ds.titlekeys.gq/ticket/'+$('#title-'+id).data('titleid')+'"}',
+						async: false,
+				        success: function(response) {
+							console.log(response);
+							itemurl[id] = response.id;
+							console.log(response.id);
+				        }
+				     });
 				}
 				sizeofselect = 0;
 				sizeofselected = 0;
